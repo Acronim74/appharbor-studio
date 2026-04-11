@@ -352,6 +352,17 @@
 
     .card-link:hover .card-arrow { transform: translateX(3px); }
 
+    a.product-card-hitbox {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      border-radius: var(--radius);
+      text-decoration: none;
+    }
+
+    .product-card.ready:hover .card-link { gap: 10px; }
+    .product-card.ready:hover .card-link .card-arrow { transform: translateX(3px); }
+
     /* ─── Philosophy ─── */
     .philosophy {
       padding: 56px 40px;
@@ -480,6 +491,7 @@
 
       <!-- HabitFlow -->
       <article class="product-card ready">
+        <a href="../products/habitflow/ru/index.html" class="product-card-hitbox" id="habitflow-landing-link" aria-label="HabitFlow — открыть страницу продукта"></a>
         <div class="card-glow" aria-hidden="true"></div>
         <span class="card-tag tag-ready" data-i18n="card.tag.ready">Готов</span>
         <div class="card-icon icon-habit" aria-hidden="true">✦</div>
@@ -487,10 +499,10 @@
         <p class="card-desc" data-i18n="card.habitflow.desc">
           Лёгкий трекер привычек. Стройте серии, оставайтесь в ритме — без регистрации.
         </p>
-        <a href="https://habitflow.appharbor.studio" class="card-link">
+        <span class="card-link">
           <span data-i18n="card.habitflow.cta">Купить на Etsy</span>
           <span class="card-arrow" aria-hidden="true">→</span>
-        </a>
+        </span>
       </article>
 
       <!-- Vitamin Planner -->
@@ -622,6 +634,12 @@
     document.addEventListener('DOMContentLoaded', () => {
       setLang('ru');
     });
+
+    (function () {
+      var a = document.getElementById('habitflow-landing-link');
+      if (!a || location.protocol === 'file:') return;
+      a.setAttribute('href', '/products/habitflow/ru/index.html');
+    })();
   </script>
 </body>
 </html>
