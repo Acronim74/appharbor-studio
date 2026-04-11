@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Subdomain → path rules are not supported in Workers _redirects (relative paths only).
+  // Use Cloudflare Dashboard: Rules → Redirect Rules or Bulk Redirects for habitflow.* / vitamins.*.
+  "name": "appharbor-studio",
+  "compatibility_date": "2026-04-11",
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": ".",
+    "html_handling": "auto-trailing-slash"
+  }
+}

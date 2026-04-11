@@ -1,0 +1,7 @@
+# Wrangler: do not upload as static assets (see Cloudflare Workers static assets docs)
+.git/
+.git/**
+.wrangler/
+.wrangler/**
+node_modules/
+node_modules/**
