@@ -1,14 +1,595 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AppHarbor Studio</title>
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <title>HabitFlow — трекер привычек PWA | AppHarbor Studio</title>
+  <meta name="description" content="Лёгкий PWA-трекер привычек. Серии, прогресс — без аккаунта и подписки.">
+  <meta property="og:title" content="HabitFlow — трекер привычек">
+  <meta property="og:description" content="Серии и стабильность. Офлайн PWA, без регистрации.">
+  <meta property="og:url" content="https://habitflow.appharbor.studio/ru/">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Reset & variables ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg:       #0F1117;
+      --color-surface:  #1A1D27;
+      --color-accent:   #4A9EFF;
+      --color-accent-2: #00D4AA;
+      --color-text:     #E8EAF0;
+      --color-muted:    #8B90A0;
+      --border:         rgba(255, 255, 255, 0.07);
+      --font-heading:   'Syne', sans-serif;
+      --font-body:      'DM Sans', sans-serif;
+      --radius:         16px;
+      --radius-sm:      10px;
+      --max-w:          1000px;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: var(--color-accent); text-decoration: none; }
+
+    /* ─── Nav ─── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(15, 17, 23, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .nav-left { display: flex; align-items: center; gap: 20px; }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-heading); font-weight: 800; font-size: 16px;
+      letter-spacing: -0.3px; color: var(--color-text); text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-2) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .nav-divider { width: 1px; height: 18px; background: var(--border); }
+    .nav-back {
+      font-size: 13px; color: var(--color-muted);
+      display: flex; align-items: center; gap: 5px;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--color-text); }
+    .lang-toggle {
+      display: flex; gap: 2px; background: var(--color-surface);
+      border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 3px;
+    }
+    .lang-btn {
+      padding: 5px 12px; border-radius: 7px; font-size: 12px; font-weight: 500;
+      cursor: pointer; color: var(--color-muted); border: none; background: none;
+      font-family: var(--font-body); transition: all 0.2s;
+    }
+    .lang-btn.active, .lang-btn:hover { background: var(--color-accent); color: #fff; }
+    .lang-toggle a.lang-btn { color: var(--color-muted); }
+    .lang-toggle a.lang-btn.active,
+    .lang-toggle a.lang-btn:hover { color: #fff; }
+
+    /* ─── Buttons ─── */
+    .btn-primary {
+      padding: 14px 32px; background: var(--color-accent-2); color: #0F1117;
+      border-radius: var(--radius-sm); font-weight: 500; font-size: 15px;
+      border: none; cursor: pointer; font-family: var(--font-body);
+      transition: opacity 0.2s, transform 0.15s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-ghost {
+      padding: 14px 32px; background: transparent; color: var(--color-text);
+      border-radius: var(--radius-sm); font-weight: 500; font-size: 15px;
+      border: 1px solid var(--border); cursor: pointer; font-family: var(--font-body);
+      transition: border-color 0.2s, transform 0.15s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-1px); }
+
+    /* ─── Hero ─── */
+    .hero-wrap { position: relative; overflow: hidden; }
+    .hero-glow {
+      position: absolute; width: 800px; height: 500px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(0, 212, 170, 0.06) 0%, transparent 70%);
+      left: 50%; transform: translateX(-50%); top: 0; pointer-events: none;
+    }
+    .hero {
+      padding: 80px 40px 56px; max-width: var(--max-w);
+      margin: 0 auto; text-align: center; position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(0, 212, 170, 0.08); border: 1px solid rgba(0, 212, 170, 0.2);
+      border-radius: 20px; padding: 5px 14px 5px 10px;
+      font-size: 12px; font-weight: 500; color: var(--color-accent-2);
+      margin-bottom: 28px; letter-spacing: 0.3px;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent-2);
+    }
+    .hero h1 {
+      font-family: var(--font-heading); font-size: clamp(36px, 5.5vw, 58px);
+      font-weight: 800; line-height: 1.08; letter-spacing: -2px; margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: normal; color: var(--color-accent-2); }
+    .hero-sub {
+      font-size: 18px; color: var(--color-muted); line-height: 1.65;
+      max-width: 480px; margin: 0 auto 36px; font-weight: 300;
+    }
+    .cta-group {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+
+    /* ─── Hero screenshot placeholder ─── */
+    .hero-screen-wrap {
+      padding: 52px 40px 80px; max-width: var(--max-w); margin: 0 auto;
+    }
+    .hero-screen {
+      border-radius: var(--radius); overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+    }
+    .placeholder-hero {
+      width: 100%; aspect-ratio: 16 / 9;
+      background: var(--color-surface);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .placeholder-label {
+      font-size: 13px; color: rgba(139, 144, 160, 0.4);
+      font-family: var(--font-body); font-weight: 400;
+    }
+
+    /* ─── Section ─── */
+    .section { padding: 72px 40px; max-width: var(--max-w); margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-eyebrow {
+      font-size: 11px; font-weight: 500; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--color-accent-2); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-heading); font-size: clamp(26px, 3.5vw, 36px);
+      font-weight: 800; letter-spacing: -1px; line-height: 1.15;
+    }
+
+    /* ─── Features ─── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
+    }
+    .feature-card {
+      background: var(--color-surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px 24px;
+      transition: border-color 0.25s, transform 0.2s;
+    }
+    .feature-card:hover { border-color: rgba(0, 212, 170, 0.2); transform: translateY(-2px); }
+    .feature-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(0, 212, 170, 0.08); border: 1px solid rgba(0, 212, 170, 0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 16px;
+    }
+    .feature-title {
+      font-family: var(--font-heading); font-size: 16px; font-weight: 700;
+      margin-bottom: 8px; letter-spacing: -0.2px;
+    }
+    .feature-desc { font-size: 14px; color: var(--color-muted); line-height: 1.6; }
+
+    /* ─── Screenshots ─── */
+    .screenshots-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .screenshot-item { display: flex; flex-direction: column; gap: 12px; }
+    .placeholder-screen {
+      width: 100%; aspect-ratio: 9 / 16;
+      background: var(--color-surface); border-radius: var(--radius);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .screenshot-caption { text-align: center; }
+    .screenshot-caption strong {
+      display: block; color: var(--color-text); font-weight: 500;
+      font-size: 14px; margin-bottom: 3px;
+    }
+    .screenshot-caption span { font-size: 13px; color: var(--color-muted); }
+
+    /* ─── How it works ─── */
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+      border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+    }
+    .step {
+      padding: 36px 28px; position: relative;
+      border-right: 1px solid var(--border);
+    }
+    .step:last-child { border-right: none; }
+    .step-num {
+      font-family: var(--font-heading); font-size: 44px; font-weight: 800;
+      color: rgba(0, 212, 170, 0.12); line-height: 1; margin-bottom: 16px;
+      letter-spacing: -2px;
+    }
+    .step-title {
+      font-family: var(--font-heading); font-size: 17px; font-weight: 700;
+      margin-bottom: 8px; letter-spacing: -0.2px;
+    }
+    .step-desc { font-size: 14px; color: var(--color-muted); line-height: 1.65; }
+
+    /* ─── CTA Banner ─── */
+    .cta-section { padding: 0 40px 72px; max-width: var(--max-w); margin: 0 auto; }
+    .cta-banner {
+      border-radius: var(--radius);
+      background: var(--color-surface);
+      border: 1px solid rgba(0, 212, 170, 0.15);
+      padding: 60px 40px; text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-banner-glow {
+      position: absolute; width: 400px; height: 300px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(0, 212, 170, 0.06) 0%, transparent 70%);
+      left: 50%; transform: translateX(-50%); top: -80px; pointer-events: none;
+    }
+    .cta-banner h2 {
+      font-family: var(--font-heading); font-size: clamp(24px, 3vw, 32px);
+      font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; position: relative;
+    }
+    .cta-banner p {
+      font-size: 16px; color: var(--color-muted); font-weight: 300;
+      max-width: 400px; margin: 0 auto 32px; line-height: 1.6; position: relative;
+    }
+    .cta-banner .cta-group { position: relative; }
+
+    /* ─── Footer ─── */
+    .footer {
+      border-top: 1px solid var(--border); padding: 28px 40px;
+      max-width: var(--max-w); margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-brand {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-heading); font-size: 13px; font-weight: 700;
+      color: var(--color-muted); text-decoration: none; transition: color 0.2s;
+    }
+    .footer-brand:hover { color: var(--color-text); }
+    .footer-copy { font-size: 13px; color: var(--color-muted); }
+    .footer-link {
+      font-size: 13px; color: var(--color-muted); transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--color-text); }
+
+    /* ─── Divider ─── */
+    .divider { border: none; border-top: 1px solid var(--border); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .screenshots-grid { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .step { border-right: none; border-bottom: 1px solid var(--border); }
+      .step:last-child { border-bottom: none; }
+    }
+    @media (max-width: 640px) {
+      .nav { padding: 16px 20px; }
+      .hero { padding: 52px 20px 40px; }
+      .hero-screen-wrap { padding: 32px 20px 56px; }
+      .section { padding: 52px 20px; }
+      .cta-section { padding: 0 20px 52px; }
+      .cta-banner { padding: 40px 24px; }
+      .footer { padding: 24px 20px; }
+    }
+  </style>
 </head>
 <body>
-  <!-- TODO: content -->
-  <script src="/assets/js/i18n.js"></script>
-  <script src="/assets/js/main.js"></script>
+
+  <!-- NAV -->
+  <header>
+    <nav class="nav">
+      <div class="nav-left">
+        <a href="../../../ru/index.html" class="nav-logo">
+          <div class="nav-logo-icon">⚓</div>
+          AppHarbor Studio
+        </a>
+        <div class="nav-divider" aria-hidden="true"></div>
+        <a href="../../../ru/index.html#products" class="nav-back">
+          ← <span data-i18n="nav.back">Все продукты</span>
+        </a>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Переключатель языка">
+        <a href="../index.html" class="lang-btn" aria-label="English" onclick="localStorage.setItem('appharbor-lang','en')">EN</a>
+        <a href="./" class="lang-btn active" aria-current="page" aria-label="Русский">RU</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero-wrap">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-badge">
+        <div class="hero-badge-dot" aria-hidden="true"></div>
+        <span data-i18n="hero.badge">Доступно на Etsy</span>
+      </div>
+      <h1 id="hero-title">
+        <span data-i18n="hero.title.line1">Формируйте привычки,</span><br>
+        <em data-i18n="hero.title.line2">которые приживаются</em>
+      </h1>
+      <p class="hero-sub" data-i18n="hero.sub">
+        Лёгкий PWA-трекер привычек. Без аккаунта и подписки — открывай и пользуйся.
+      </p>
+      <div class="cta-group">
+        <a href="https://www.etsy.com" target="_blank" rel="noopener" class="btn-primary" data-i18n="hero.cta.primary">
+          Купить на Etsy →
+        </a>
+        <a href="#features" class="btn-ghost" data-i18n="hero.cta.secondary">Смотреть фичи</a>
+      </div>
+    </section>
+
+    <!-- Hero placeholder -->
+    <div class="hero-screen-wrap">
+      <div class="hero-screen">
+        <div class="placeholder-hero" role="img" aria-label="Скриншот HabitFlow">
+          <span class="placeholder-label">1280 × 720</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="section" id="features" aria-labelledby="features-heading">
+    <div class="section-header">
+      <div class="section-eyebrow" data-i18n="features.eyebrow">Возможности</div>
+      <h2 class="section-title" id="features-heading" data-i18n="features.title">
+        Всё нужное. Ничего лишнего.
+      </h2>
+    </div>
+    <div class="features-grid">
+
+      <article class="feature-card">
+        <div class="feature-icon" aria-hidden="true">◎</div>
+        <h3 class="feature-title" data-i18n="feature.streaks.title">Серии и трекинг</h3>
+        <p class="feature-desc" data-i18n="feature.streaks.desc">
+          Текущие и лучшие серии — всегда перед глазами. Импульс нарастает сам.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon" aria-hidden="true">⊘</div>
+        <h3 class="feature-title" data-i18n="feature.offline.title">Офлайн-режим</h3>
+        <p class="feature-desc" data-i18n="feature.offline.desc">
+          Работает без интернета. Устанавливается как PWA на любое устройство.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon" aria-hidden="true">◈</div>
+        <h3 class="feature-title" data-i18n="feature.stats.title">Статистика прогресса</h3>
+        <p class="feature-desc" data-i18n="feature.stats.desc">
+          Недельная и месячная статистика. История выполнения всегда на устройстве.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon" aria-hidden="true">◻</div>
+        <h3 class="feature-title" data-i18n="feature.custom.title">Свои привычки</h3>
+        <p class="feature-desc" data-i18n="feature.custom.desc">
+          Добавляйте любые привычки с именем, иконкой и частотой. Ежедневно или еженедельно.
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SCREENSHOTS -->
+  <section class="section" id="screenshots" aria-labelledby="screenshots-heading">
+    <div class="section-header">
+      <div class="section-eyebrow" data-i18n="screenshots.eyebrow">Скриншоты</div>
+      <h2 class="section-title" id="screenshots-heading" data-i18n="screenshots.title">
+        Чистый интерфейс, ноль лишнего
+      </h2>
+    </div>
+    <div class="screenshots-grid">
+
+      <div class="screenshot-item">
+        <div class="placeholder-screen" role="img" aria-label="Экран «Сегодня»">
+          <span class="placeholder-label">390 × 844</span>
+        </div>
+        <div class="screenshot-caption">
+          <strong data-i18n="screen1.title">Привычки на сегодня</strong>
+          <span data-i18n="screen1.desc">Все задачи дня — одним взглядом</span>
+        </div>
+      </div>
+
+      <div class="screenshot-item">
+        <div class="placeholder-screen" role="img" aria-label="Экран статистики">
+          <span class="placeholder-label">390 × 844</span>
+        </div>
+        <div class="screenshot-caption">
+          <strong data-i18n="screen2.title">Прогресс и серии</strong>
+          <span data-i18n="screen2.desc">Недельная статистика и процент выполнения</span>
+        </div>
+      </div>
+
+      <div class="screenshot-item">
+        <div class="placeholder-screen" role="img" aria-label="Добавление привычки">
+          <span class="placeholder-label">390 × 844</span>
+        </div>
+        <div class="screenshot-caption">
+          <strong data-i18n="screen3.title">Добавить и настроить</strong>
+          <span data-i18n="screen3.desc">Создавайте привычки с иконками и частотой</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how" aria-labelledby="how-heading">
+    <div class="section-header">
+      <div class="section-eyebrow" data-i18n="how.eyebrow">Как это работает</div>
+      <h2 class="section-title" id="how-heading" data-i18n="how.title">
+        Готово к работе за 60 секунд
+      </h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3 class="step-title" data-i18n="step1.title">Купить один раз на Etsy</h3>
+        <p class="step-desc" data-i18n="step1.desc">
+          Разовая оплата. Без подписки. Вы получаете прямую ссылку на приложение.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3 class="step-title" data-i18n="step2.title">Открыть в браузере</h3>
+        <p class="step-desc" data-i18n="step2.desc">
+          Работает на любом устройстве сразу. Можно установить как PWA.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3 class="step-title" data-i18n="step3.title">Добавить привычки и начать</h3>
+        <p class="step-desc" data-i18n="step3.desc">
+          Первая привычка — за 10 секунд. Данные хранятся на устройстве, приватно.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <div class="cta-section">
+    <div class="cta-banner" role="complementary">
+      <div class="cta-banner-glow" aria-hidden="true"></div>
+      <h2 data-i18n="cta.title">Готовы формировать лучшие привычки?</h2>
+      <p data-i18n="cta.sub">Разовая покупка. Работает бессрочно. Без аккаунта и облака.</p>
+      <div class="cta-group">
+        <a href="https://www.etsy.com" target="_blank" rel="noopener" class="btn-primary" data-i18n="cta.btn">
+          Купить HabitFlow на Etsy →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <a href="../../../ru/index.html" class="footer-brand">⚓ AppHarbor Studio</a>
+    <span class="footer-copy">© 2025 AppHarbor Studio</span>
+    <a href="mailto:hello@appharbor.studio" class="footer-link">hello@appharbor.studio</a>
+  </footer>
+
+  <script>
+    // ─── i18n ────────────────────────────────────────────────
+    const translations = {
+      en: {
+        'nav.back':              'All products',
+        'hero.badge':            'Available now on Etsy',
+        'hero.title.line1':      'Build habits',
+        'hero.title.line2':      'that actually stick',
+        'hero.sub':              'A lightweight PWA habit tracker. No account, no subscription — just open and start.',
+        'hero.cta.primary':      'Get it on Etsy →',
+        'hero.cta.secondary':    'See features',
+        'features.eyebrow':      'Features',
+        'features.title':        'Everything you need. Nothing you don\'t.',
+        'feature.streaks.title': 'Streaks & tracking',
+        'feature.streaks.desc':  'See your current and longest streaks at a glance. Momentum builds itself.',
+        'feature.offline.title': 'Offline-first',
+        'feature.offline.desc':  'Works without internet. Installs as a PWA on any device — phone, tablet, desktop.',
+        'feature.stats.title':   'Progress insights',
+        'feature.stats.desc':    'Weekly and monthly stats. Completion rates and full history, always on-device.',
+        'feature.custom.title':  'Custom habits',
+        'feature.custom.desc':   'Add any habit with a name, icon, and target frequency. Daily, weekly — your rules.',
+        'screenshots.eyebrow':   'Screenshots',
+        'screenshots.title':     'Clean interface, zero clutter',
+        'screen1.title':         'Today\'s habits',
+        'screen1.desc':          'All your habits for the day at a glance',
+        'screen2.title':         'Progress & streaks',
+        'screen2.desc':          'Weekly stats and completion rates',
+        'screen3.title':         'Add & customize',
+        'screen3.desc':          'Create habits with icons and frequencies',
+        'how.eyebrow':           'How it works',
+        'how.title':             'Up and running in 60 seconds',
+        'step1.title':           'Buy once on Etsy',
+        'step1.desc':            'One-time payment. No subscription. You get a direct link to the app — no download needed.',
+        'step2.title':           'Open in your browser',
+        'step2.desc':            'Works on any device instantly. Optionally install as a PWA for a native app feel.',
+        'step3.title':           'Add habits & start',
+        'step3.desc':            'Create your first habit in 10 seconds. Data stays on your device — always private.',
+        'cta.title':             'Ready to build better habits?',
+        'cta.sub':               'One-time purchase. Works forever. No account, no cloud, no nonsense.',
+        'cta.btn':               'Get HabitFlow on Etsy →',
+      },
+      ru: {
+        'nav.back':              'Все продукты',
+        'hero.badge':            'Доступно на Etsy',
+        'hero.title.line1':      'Формируйте привычки,',
+        'hero.title.line2':      'которые приживаются',
+        'hero.sub':              'Лёгкий PWA-трекер привычек. Без аккаунта и подписки — открывай и пользуйся.',
+        'hero.cta.primary':      'Купить на Etsy →',
+        'hero.cta.secondary':    'Смотреть фичи',
+        'features.eyebrow':      'Возможности',
+        'features.title':        'Всё нужное. Ничего лишнего.',
+        'feature.streaks.title': 'Серии и трекинг',
+        'feature.streaks.desc':  'Текущие и лучшие серии — всегда перед глазами. Импульс нарастает сам.',
+        'feature.offline.title': 'Офлайн-режим',
+        'feature.offline.desc':  'Работает без интернета. Устанавливается как PWA на любое устройство.',
+        'feature.stats.title':   'Статистика прогресса',
+        'feature.stats.desc':    'Недельная и месячная статистика. История выполнения всегда на устройстве.',
+        'feature.custom.title':  'Свои привычки',
+        'feature.custom.desc':   'Добавляйте любые привычки с именем, иконкой и частотой. Ежедневно или еженедельно.',
+        'screenshots.eyebrow':   'Скриншоты',
+        'screenshots.title':     'Чистый интерфейс, ноль лишнего',
+        'screen1.title':         'Привычки на сегодня',
+        'screen1.desc':          'Все задачи дня — одним взглядом',
+        'screen2.title':         'Прогресс и серии',
+        'screen2.desc':          'Недельная статистика и процент выполнения',
+        'screen3.title':         'Добавить и настроить',
+        'screen3.desc':          'Создавайте привычки с иконками и частотой',
+        'how.eyebrow':           'Как это работает',
+        'how.title':             'Готово к работе за 60 секунд',
+        'step1.title':           'Купить один раз на Etsy',
+        'step1.desc':            'Разовая оплата. Без подписки. Вы получаете прямую ссылку на приложение.',
+        'step2.title':           'Открыть в браузере',
+        'step2.desc':            'Работает на любом устройстве сразу. Можно установить как PWA.',
+        'step3.title':           'Добавить привычки и начать',
+        'step3.desc':            'Первая привычка — за 10 секунд. Данные хранятся на устройстве, приватно.',
+        'cta.title':             'Готовы формировать лучшие привычки?',
+        'cta.sub':               'Разовая покупка. Работает бессрочно. Без аккаунта и облака.',
+        'cta.btn':               'Купить HabitFlow на Etsy →',
+      }
+    };
+
+    function setLang(lang) {
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+      });
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (translations[lang]?.[key]) el.textContent = translations[lang][key];
+      });
+      document.documentElement.lang = lang;
+      localStorage.setItem('appharbor-lang', lang);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setLang('ru');
+    });
+  </script>
 </body>
 </html>
