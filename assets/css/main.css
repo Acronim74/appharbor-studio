@@ -1,0 +1,21 @@
+:root {
+  --color-bg:       #0F1117;
+  --color-surface:  #1A1D27;
+  --color-accent:   #4A9EFF;
+  --color-accent-2: #00D4AA;
+  --color-text:     #E8EAF0;
+  --color-muted:    #8B90A0;
+
+  --font-heading: 'Inter', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
+  --radius:   12px;
+  --radius-sm: 6px;
+  --spacing:  1rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body { background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); line-height: 1.6; }
+img { max-width: 100%; display: block; }
+a { color: var(--color-accent); text-decoration: none; }
