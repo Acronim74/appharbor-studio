@@ -3,133 +3,1290 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AppHarbor Studio — Coming Soon</title>
-  <meta name="description" content="AppHarbor Studio is being updated. Coming soon in English.">
-  <meta property="og:title" content="AppHarbor Studio">
-  <meta property="og:description" content="Coming soon in English.">
-  <meta property="og:url" content="https://appharbor.studio">
+  <title>HabitFlow — Offline Habit Tracker · $9 One-Time</title>
+  <meta name="description" content="HabitFlow is an offline-first PWA habit tracker. Track good and bad habits, build streaks, analyze your progress. One-time $9 — no subscription, no servers.">
+  <meta property="og:title" content="HabitFlow — Offline Habit Tracker">
+  <meta property="og:description" content="Track habits offline. Your data stays on your device. One-time $9, no subscription.">
+  <meta property="og:url" content="https://appharbor.studio/products/habitflow/">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <style>
+    /* ── Reset & base ─────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
 
     :root {
-      --color-bg:      #0F1117;
-      --color-surface: #1A1D27;
-      --color-accent:  #4A9EFF;
-      --color-accent-2:#00D4AA;
-      --color-text:    #E8EAF0;
-      --color-muted:   #8B90A0;
-      --font-heading:  'Syne', sans-serif;
-      --font-body:     'DM Sans', sans-serif;
-    }
-
-    html, body {
-      height: 100%;
+      --bg:        #0F1117;
+      --surface:   #1A1D27;
+      --surface2:  #20243200;
+      --border:    rgba(255,255,255,.07);
+      --accent:    #4A9EFF;
+      --accent2:   #00D4AA;
+      --app-green: #52b788;
+      --bad:       #e07b6a;
+      --text:      #E8EAF0;
+      --muted:     #8B90A0;
+      --fh: 'Syne', sans-serif;
+      --fb: 'DM Sans', sans-serif;
+      --r: 14px;
+      --r-sm: 8px;
     }
 
     body {
-      background: var(--color-bg);
-      color: var(--color-text);
-      font-family: var(--font-body);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--fb);
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    .container {
-      text-align: center;
-      max-width: 480px;
-    }
+    a { color: var(--accent); text-decoration: none; }
+    img { max-width: 100%; display: block; }
 
-    .logo {
-      font-family: var(--font-heading);
+    /* ── Typography ───────────────────────── */
+    .h1 {
+      font-family: var(--fh);
       font-weight: 800;
-      font-size: 1.25rem;
-      letter-spacing: -0.02em;
-      margin-bottom: 3rem;
-      color: var(--color-text);
-    }
-
-    .logo span {
-      color: var(--color-accent);
-    }
-
-    .badge {
-      display: inline-block;
-      background: rgba(74, 158, 255, 0.12);
-      border: 1px solid rgba(74, 158, 255, 0.25);
-      color: var(--color-accent);
-      font-family: var(--font-body);
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 0.35rem 0.9rem;
-      border-radius: 100px;
-      margin-bottom: 2rem;
-    }
-
-    h1 {
-      font-family: var(--font-heading);
-      font-weight: 800;
-      font-size: clamp(2rem, 6vw, 3rem);
-      line-height: 1.1;
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      line-height: 1.08;
       letter-spacing: -0.03em;
-      margin-bottom: 1.25rem;
     }
-
+    .h2 {
+      font-family: var(--fh);
+      font-weight: 700;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+    }
+    .h3 {
+      font-family: var(--fh);
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.01em;
+    }
     .gradient {
-      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+    .muted { color: var(--muted); }
 
-    p {
-      color: var(--color-muted);
-      font-size: 1.05rem;
-      line-height: 1.65;
+    /* ── Layout ──────────────────────────── */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    .container--narrow {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
     }
 
-    .dots {
+    /* ── Header ──────────────────────────── */
+    .site-header {
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,17,23,.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo {
+      font-family: var(--fh);
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .logo span { color: var(--accent); }
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .header-nav a {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    .header-nav a:hover { color: var(--text); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      font-family: var(--fb);
+      font-weight: 500;
+      font-size: .95rem;
+      padding: .6rem 1.35rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: opacity .2s, transform .15s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+    }
+    .btn-ghost {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-lg {
+      font-size: 1.05rem;
+      padding: .8rem 2rem;
+    }
+
+    /* ── Badge pill ──────────────────────── */
+    .badge {
+      display: inline-block;
+      background: rgba(74,158,255,.1);
+      border: 1px solid rgba(74,158,255,.22);
+      color: var(--accent);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: .28rem .85rem;
+      border-radius: 100px;
+    }
+    .badge-green {
+      background: rgba(82,183,136,.1);
+      border-color: rgba(82,183,136,.22);
+      color: var(--app-green);
+    }
+
+    /* ── Section spacing ─────────────────── */
+    .section { padding: 5rem 0; }
+    .section--sm { padding: 3rem 0; }
+    .section-label {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .75rem;
+    }
+
+    /* ════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════ */
+    .hero {
+      padding: 5rem 0 4rem;
+      overflow: hidden;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero-text .badge { margin-bottom: 1.5rem; }
+    .hero-text .h1 { margin-bottom: 1.25rem; }
+    .hero-text .lead {
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .hero-cta {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+    .hero-meta {
+      margin-top: 1.25rem;
+      font-size: .82rem;
+      color: var(--muted);
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .hero-meta span::before { content: '✓ '; color: var(--app-green); }
+
+    /* ── Phone mockup ────────────────────── */
+    .phone-wrap {
       display: flex;
       justify-content: center;
-      gap: 0.5rem;
-      margin-top: 3rem;
+      align-items: flex-start;
+      position: relative;
+    }
+    .phone {
+      width: 280px;
+      background: #111318;
+      border-radius: 36px;
+      border: 2px solid rgba(255,255,255,.1);
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,.5),
+        0 40px 80px rgba(0,0,0,.6),
+        0 0 60px rgba(74,158,255,.08);
+      overflow: hidden;
+      position: relative;
+    }
+    .phone-notch {
+      width: 90px;
+      height: 22px;
+      background: #111318;
+      border-radius: 0 0 14px 14px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    .phone-screen {
+      background: #fff;
+      min-height: 520px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    /* App UI inside phone */
+    .p-topbar {
+      background: #fff;
+      padding: 8px 14px 6px;
+      border-bottom: 1px solid #e8ecf0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .p-topbar-logo {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2d6a4f;
+      letter-spacing: -.01em;
+    }
+    .p-topbar-date {
+      font-size: 9px;
+      color: #888;
+    }
+    .p-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+
+    /* Gauge card */
+    .p-gauge-card {
+      background: #f8faf9;
+      border: 1px solid #e0ede6;
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .p-gauge-svg { flex-shrink: 0; }
+    .p-gauge-info { flex: 1; min-width: 0; }
+    .p-gauge-pct { font-size: 18px; font-weight: 700; color: #2d6a4f; }
+    .p-gauge-sub { font-size: 9px; color: #888; margin-top: 1px; }
+
+    /* Streak card */
+    .p-streak-card {
+      background: #f8faf9;
+      border: 1px solid #e0ede6;
+      border-radius: 10px;
+      padding: 7px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .p-streak-lbl { font-size: 9px; color: #888; }
+    .p-streak-val { font-size: 13px; font-weight: 700; color: #111; }
+
+    /* Section label */
+    .p-sec {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 0;
+    }
+    .p-sec-lbl { font-size: 9px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: .04em; }
+    .p-sec-badge {
+      font-size: 9px;
+      background: #e8f4ed;
+      color: #2d6a4f;
+      padding: 1px 6px;
+      border-radius: 20px;
+      font-weight: 600;
     }
 
-    .dot {
-      width: 6px;
-      height: 6px;
+    /* Habit card */
+    .p-hcard {
+      background: #fff;
+      border: 1px solid #e8ecf0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .p-hcard-done { border-color: #b7dfc8; background: #f0faf4; }
+    .p-hcard-row {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      gap: 8px;
+    }
+    .p-hcard-ico { font-size: 14px; }
+    .p-hcard-body { flex: 1; min-width: 0; }
+    .p-hcard-name { font-size: 10px; font-weight: 600; color: #111; }
+    .p-hcard-name-done { color: #2d6a4f; }
+    .p-hcard-sub { font-size: 8px; color: #888; margin-top: 1px; }
+    .p-hcard-sub-streak { color: #e07b39; }
+    .p-hcard-btn {
+      width: 22px; height: 22px;
       border-radius: 50%;
-      background: var(--color-accent);
-      opacity: 0.3;
-      animation: pulse 1.4s ease-in-out infinite;
+      border: 2px solid #d0d5dd;
+      flex-shrink: 0;
     }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
+    .p-hcard-btn-done {
+      background: #2d6a4f;
+      border-color: #2d6a4f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 10px;
+    }
+    .p-hcard-bar { height: 2px; background: #e8ecf0; }
+    .p-hcard-bar-fill { height: 2px; background: linear-gradient(90deg,#52b788,#2d6a4f); }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50%       { opacity: 1;   transform: scale(1.3); }
+    /* Bad habit card */
+    .p-bcard {
+      background: #fff;
+      border: 1px solid #e8ecf0;
+      border-radius: 10px;
+    }
+    .p-bcard-row {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      gap: 8px;
+    }
+    .p-bcard-body { flex: 1; min-width: 0; }
+    .p-bcard-name { font-size: 10px; font-weight: 600; color: #111; }
+    .p-bcard-sub { font-size: 8px; color: #888; margin-top: 1px; }
+    .p-bcard-btns { display: flex; gap: 4px; }
+    .p-bcard-btn-g, .p-bcard-btn-r {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700;
+    }
+    .p-bcard-btn-g { background: #e8f4ed; color: #2d6a4f; }
+    .p-bcard-btn-r { background: #fdecea; color: #c0392b; }
+
+    /* Bottom nav */
+    .p-nav {
+      display: flex;
+      background: #fff;
+      border-top: 1px solid #e8ecf0;
+      padding: 6px 0 8px;
+    }
+    .p-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .p-nav-ico { font-size: 13px; }
+    .p-nav-lbl { font-size: 7px; color: #aaa; }
+    .p-nav-lbl-active { color: #2d6a4f; font-weight: 600; }
+
+    /* Glow behind phone */
+    .phone-glow {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(74,158,255,.15) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+    }
+
+    /* ════════════════════════════════════════
+       PILLARS
+    ════════════════════════════════════════ */
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+    .pillar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1.75rem 1.5rem;
+    }
+    .pillar-ico {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .pillar h3 { margin-bottom: .5rem; }
+    .pillar p { font-size: .93rem; color: var(--muted); line-height: 1.6; }
+
+    /* ════════════════════════════════════════
+       FEATURES GRID
+    ════════════════════════════════════════ */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .feature-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .feature-ico {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      margin-top: .1rem;
+    }
+    .feature-item h3 { font-size: 1rem; margin-bottom: .3rem; }
+    .feature-item p { font-size: .88rem; color: var(--muted); line-height: 1.55; }
+
+    /* ════════════════════════════════════════
+       HOW IT WORKS
+    ════════════════════════════════════════ */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 2rem;
+      left: calc(16.66% + 1rem);
+      right: calc(16.66% + 1rem);
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: .25;
+    }
+    .step { text-align: center; }
+    .step-num {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(74,158,255,.15), rgba(0,212,170,.1));
+      border: 1px solid rgba(74,158,255,.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      font-family: var(--fh);
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--accent);
+    }
+    .step h3 { margin-bottom: .5rem; }
+    .step p { font-size: .9rem; color: var(--muted); }
+
+    /* ════════════════════════════════════════
+       SCREENS SHOWCASE
+    ════════════════════════════════════════ */
+    .showcase {
+      display: flex;
+      flex-direction: column;
+      gap: 5rem;
+    }
+    .showcase-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .showcase-row--flip { direction: rtl; }
+    .showcase-row--flip > * { direction: ltr; }
+    .showcase-text .badge { margin-bottom: 1rem; }
+    .showcase-text .h2 { margin-bottom: 1rem; }
+    .showcase-text p { color: var(--muted); line-height: 1.7; margin-bottom: 1rem; }
+    .showcase-text ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+    .showcase-text ul li {
+      font-size: .92rem;
+      color: var(--muted);
+      display: flex;
+      gap: .6rem;
+      align-items: flex-start;
+    }
+    .showcase-text ul li::before {
+      content: '✓';
+      color: var(--app-green);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: .1rem;
+    }
+
+    /* ── Analytics mockup ─── */
+    .analytics-mock {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,.5);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .am-bar {
+      background: #2d6a4f;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .am-title { font-size: 13px; font-weight: 700; color: #fff; }
+    .am-tabs { display: flex; gap: 4px; }
+    .am-tab {
+      font-size: 9px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      color: rgba(255,255,255,.6);
+      font-weight: 500;
+    }
+    .am-tab-active { background: rgba(255,255,255,.2); color: #fff; }
+    .am-body { padding: 12px 14px; }
+    .am-stats { display: flex; gap: 8px; margin-bottom: 10px; }
+    .am-stat {
+      flex: 1;
+      background: #f5f7f5;
+      border-radius: 8px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+    .am-stat-val { font-size: 14px; font-weight: 700; color: #111; }
+    .am-stat-lbl { font-size: 8px; color: #888; margin-top: 1px; }
+    .am-hm-label { font-size: 9px; color: #888; margin-bottom: 6px; font-weight: 500; }
+    .am-hm {
+      display: grid;
+      grid-template-columns: repeat(30, 1fr);
+      gap: 2px;
+    }
+    .am-cell {
+      aspect-ratio: 1;
+      border-radius: 2px;
+      background: #e8ede9;
+    }
+    .am-cell.lv1 { background: #b7dfc8; }
+    .am-cell.lv2 { background: #74c69d; }
+    .am-cell.lv3 { background: #52b788; }
+    .am-cell.lv4 { background: #2d6a4f; }
+    .am-cell.today { outline: 1.5px solid #4A9EFF; outline-offset: 1px; }
+
+    /* ── Badges mockup ────── */
+    .badges-mock {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,.5);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 16px;
+    }
+    .bm-title { font-size: 13px; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .bm-sub { font-size: 9px; color: #888; margin-bottom: 14px; }
+    .bm-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(74,158,255,.12);
+      border: 2px solid #4A9EFF;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      margin: 0 auto 8px;
+    }
+    .bm-stage { text-align: center; font-size: 11px; font-weight: 700; color: #111; }
+    .bm-pts { text-align: center; font-size: 9px; color: #888; margin-bottom: 12px; }
+    .bm-road {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      margin-bottom: 14px;
+    }
+    .bm-dot {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #e8ecf0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+    .bm-dot-done { background: #52b788; }
+    .bm-dot-current {
+      background: #4A9EFF;
+      box-shadow: 0 0 8px rgba(74,158,255,.5);
+      width: 24px; height: 24px;
+    }
+    .bm-line { width: 10px; height: 2px; background: #e0e4e8; flex-shrink: 0; }
+    .bm-line-done { background: #52b788; }
+    .bm-badges-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 6px;
+    }
+    .bm-badge {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      background: #f5f7f5;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .bm-badge-locked { opacity: .3; }
+
+    /* ════════════════════════════════════════
+       PRICING
+    ════════════════════════════════════════ */
+    .pricing-card {
+      max-width: 420px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid rgba(74,158,255,.25);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(74,158,255,.06);
+    }
+    .pricing-name {
+      font-family: var(--fh);
+      font-weight: 800;
+      font-size: 1.4rem;
+      margin-bottom: .5rem;
+    }
+    .pricing-desc { color: var(--muted); font-size: .95rem; margin-bottom: 2rem; }
+    .pricing-price {
+      margin-bottom: 2rem;
+    }
+    .pricing-amount {
+      font-family: var(--fh);
+      font-weight: 800;
+      font-size: 3.5rem;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .pricing-period {
+      font-size: .9rem;
+      color: var(--muted);
+      margin-top: .35rem;
+    }
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: .65rem;
+    }
+    .pricing-features li {
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+      font-size: .93rem;
+      color: var(--muted);
+    }
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--app-green);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .pricing-card .btn {
+      width: 100%;
+      justify-content: center;
+      font-size: 1.05rem;
+      padding: .9rem 2rem;
+    }
+    .pricing-note {
+      margin-top: 1rem;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    /* ════════════════════════════════════════
+       FAQ
+    ════════════════════════════════════════ */
+    .faq { display: flex; flex-direction: column; gap: .75rem; }
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+    }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: var(--fb);
+      font-size: 1rem;
+      font-weight: 500;
+      text-align: left;
+      padding: 1.1rem 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .faq-arrow {
+      color: var(--muted);
+      font-size: .8rem;
+      transition: transform .25s;
+      flex-shrink: 0;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      display: none;
+      padding: 0 1.5rem 1.1rem;
+      color: var(--muted);
+      font-size: .93rem;
+      line-height: 1.7;
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════ */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+    .footer-links a {
+      color: var(--muted);
+      font-size: .88rem;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy {
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    /* ════════════════════════════════════════
+       MOBILE
+    ════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .phone-wrap { margin-top: 0; }
+      .phone { width: 240px; }
+      .phone-screen { min-height: 440px; }
+      .pillars { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 2rem; }
+      .steps::before { display: none; }
+      .showcase-row { grid-template-columns: 1fr; }
+      .showcase-row--flip { direction: ltr; }
+      .header-nav .btn-ghost { display: none; }
+      .hero-text .h1 { font-size: 2rem; }
+    }
+    @media (max-width: 480px) {
+      .hero { padding: 3rem 0 2rem; }
+      .section { padding: 3.5rem 0; }
+      .phone { width: 210px; }
     }
   </style>
 </head>
 <body>
+
+<!-- ══ HEADER ══════════════════════════════ -->
+<header class="site-header">
   <div class="container">
-    <div class="logo">App<span>Harbor</span> Studio</div>
-    <h1 class="gradient">Coming Soon</h1>
-    <p>We're working on something. Check back later.</p>
-    <div class="dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+    <div class="header-inner">
+      <a href="/" class="logo">App<span>Harbor</span> Studio</a>
+      <nav class="header-nav">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="https://habitflow.appharbor.studio" target="_blank" rel="noopener" class="btn btn-ghost">Try the app →</a>
+      </nav>
     </div>
   </div>
+</header>
+
+<!-- ══ HERO ════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-text">
+        <div class="badge badge-green">🌿 Offline-first PWA</div>
+        <h1 class="h1">Build habits that<br><span class="gradient">actually stick</span></h1>
+        <p class="lead">Track good habits and bad ones. Watch your streaks grow. Analyze your progress — all without an internet connection and without giving your data to anyone.</p>
+        <div class="hero-cta">
+          <a href="#pricing" class="btn btn-primary btn-lg">Buy for $9 →</a>
+          <a href="https://habitflow.appharbor.studio" target="_blank" rel="noopener" class="btn btn-ghost btn-lg">Try the app</a>
+        </div>
+        <div class="hero-meta">
+          <span>One-time payment</span>
+          <span>No subscription</span>
+          <span>Works offline</span>
+          <span>iOS &amp; Android</span>
+        </div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="phone-glow"></div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <!-- Top bar -->
+            <div class="p-topbar">
+              <div class="p-topbar-logo">🌿 HabitFlow</div>
+              <div class="p-topbar-date">Friday, May 2</div>
+            </div>
+            <div class="p-body">
+              <!-- Gauge card -->
+              <div class="p-gauge-card">
+                <svg class="p-gauge-svg" viewBox="0 0 60 60" width="52" height="52">
+                  <circle cx="30" cy="30" r="24" fill="none" stroke="#e0ede6" stroke-width="5"/>
+                  <circle cx="30" cy="30" r="24" fill="none" stroke="#2d6a4f" stroke-width="5"
+                          stroke-linecap="round"
+                          stroke-dasharray="150.72"
+                          stroke-dashoffset="37.68"
+                          transform="rotate(-90 30 30)"/>
+                </svg>
+                <div class="p-gauge-info">
+                  <div class="p-gauge-pct">75%</div>
+                  <div class="p-gauge-sub">3 of 4 habits done</div>
+                </div>
+              </div>
+              <!-- Personal best -->
+              <div class="p-streak-card">
+                <div>
+                  <div class="p-streak-lbl">Personal best</div>
+                  <div class="p-streak-val">12 days</div>
+                </div>
+                <div style="font-size:9px;color:#888">🏃 Morning Run</div>
+              </div>
+              <!-- Good habits section -->
+              <div class="p-sec">
+                <div class="p-sec-lbl">Good habits</div>
+                <div class="p-sec-badge">3 of 4</div>
+              </div>
+              <!-- Card 1 — done -->
+              <div class="p-hcard p-hcard-done">
+                <div class="p-hcard-row">
+                  <div class="p-hcard-ico">🏃</div>
+                  <div class="p-hcard-body">
+                    <div class="p-hcard-name p-hcard-name-done">Morning Run</div>
+                    <div class="p-hcard-sub p-hcard-sub-streak">🔥 12-day streak</div>
+                  </div>
+                  <div class="p-hcard-btn p-hcard-btn-done">✓</div>
+                </div>
+                <div class="p-hcard-bar-fill" style="width:100%"></div>
+              </div>
+              <!-- Card 2 — done -->
+              <div class="p-hcard p-hcard-done">
+                <div class="p-hcard-row">
+                  <div class="p-hcard-ico">📚</div>
+                  <div class="p-hcard-body">
+                    <div class="p-hcard-name p-hcard-name-done">Read 20 min</div>
+                    <div class="p-hcard-sub p-hcard-sub-streak">🔥 7-day streak</div>
+                  </div>
+                  <div class="p-hcard-btn p-hcard-btn-done">✓</div>
+                </div>
+                <div class="p-hcard-bar-fill" style="width:100%"></div>
+              </div>
+              <!-- Card 3 — active -->
+              <div class="p-hcard" style="border-color:#4A9EFF44;background:#f0f5ff">
+                <div class="p-hcard-row">
+                  <div class="p-hcard-ico">🧘</div>
+                  <div class="p-hcard-body">
+                    <div class="p-hcard-name">Meditation</div>
+                    <div class="p-hcard-sub">Start your streak today</div>
+                  </div>
+                  <div class="p-hcard-btn"></div>
+                </div>
+                <div class="p-hcard-bar"></div>
+              </div>
+              <!-- Bad habits -->
+              <div class="p-sec" style="margin-top:2px">
+                <div class="p-sec-lbl">Bad habits</div>
+              </div>
+              <div class="p-bcard">
+                <div class="p-bcard-row">
+                  <div style="font-size:14px">🚬</div>
+                  <div class="p-bcard-body">
+                    <div class="p-bcard-name">No Smoking</div>
+                    <div class="p-bcard-sub">5 days clean · mark today</div>
+                  </div>
+                  <div class="p-bcard-btns">
+                    <div class="p-bcard-btn-g">✓</div>
+                    <div class="p-bcard-btn-r">✕</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Bottom nav -->
+            <div class="p-nav">
+              <div class="p-nav-item">
+                <div class="p-nav-ico">☀️</div>
+                <div class="p-nav-lbl p-nav-lbl-active">Today</div>
+              </div>
+              <div class="p-nav-item">
+                <div class="p-nav-ico">✅</div>
+                <div class="p-nav-lbl">Habits</div>
+              </div>
+              <div class="p-nav-item">
+                <div class="p-nav-ico">📊</div>
+                <div class="p-nav-lbl">Analytics</div>
+              </div>
+              <div class="p-nav-item">
+                <div class="p-nav-ico">🏅</div>
+                <div class="p-nav-lbl">Badges</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ PILLARS ══════════════════════════════ -->
+<section class="section--sm">
+  <div class="container">
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-ico">📴</div>
+        <h3 class="h3">Works offline</h3>
+        <p>No internet required — ever. Open the app on a plane, in the mountains, anywhere. It works exactly the same.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-ico">💾</div>
+        <h3 class="h3">Your data, your device</h3>
+        <p>Everything is stored locally in your browser. Export a JSON backup anytime. No accounts, no cloud, no data leaks.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-ico">💳</div>
+        <h3 class="h3">Pay once, own forever</h3>
+        <p>One-time $9. No monthly fees, no "premium plan". Buy it, install it, use it for years.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══════════════════════════ -->
+<section class="section" id="how-it-works">
+  <div class="container--narrow">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="section-label">How it works</div>
+      <h2 class="h2">Simple by design</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3 class="h3">Add your habits</h3>
+        <p>Create good habits and bad ones. Pick a schedule, icon, and category. Takes 10 seconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3 class="h3">Check in daily</h3>
+        <p>Tap to mark a habit done — the card flips to confirm. For bad habits, log a clean day or a slip.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3 class="h3">Watch progress</h3>
+        <p>Streaks grow, points multiply, badges unlock. Heatmaps show your consistency over weeks and months.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES + SHOWCASE ══════════════════ -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="showcase">
+
+      <!-- Row 1: Analytics -->
+      <div class="showcase-row">
+        <div class="showcase-text">
+          <div class="badge">Analytics</div>
+          <h2 class="h2" style="margin-top:.75rem">See your consistency<br>at a glance</h2>
+          <p>Heat maps show every day you've been consistent — week, month, quarter or full year. Separate charts for good and bad habits.</p>
+          <ul>
+            <li>Week / Month / Quarter / Year views</li>
+            <li>Good habits completion heatmap</li>
+            <li>Bad habits slip tracker</li>
+            <li>Optional mood journal with line chart</li>
+            <li>Stats: active days, perfect days, avg %</li>
+          </ul>
+        </div>
+        <!-- Analytics mockup -->
+        <div class="analytics-mock">
+          <div class="am-bar">
+            <div class="am-title">📊 Analytics</div>
+            <div class="am-tabs">
+              <div class="am-tab">Week</div>
+              <div class="am-tab am-tab-active">Month</div>
+              <div class="am-tab">Quarter</div>
+            </div>
+          </div>
+          <div class="am-body">
+            <div class="am-stats">
+              <div class="am-stat"><div class="am-stat-val">18</div><div class="am-stat-lbl">active days</div></div>
+              <div class="am-stat"><div class="am-stat-val">11</div><div class="am-stat-lbl">perfect days</div></div>
+              <div class="am-stat"><div class="am-stat-val">72%</div><div class="am-stat-lbl">avg this month</div></div>
+            </div>
+            <div class="am-hm-label">Good habits · May 2026</div>
+            <div class="am-hm" id="amHm"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Badges -->
+      <div class="showcase-row showcase-row--flip">
+        <div class="showcase-text">
+          <div class="badge">Gamification</div>
+          <h2 class="h2" style="margin-top:.75rem">Stay motivated with<br>streaks &amp; badges</h2>
+          <p>Every check-in earns points. Longer streaks multiply your score. Your avatar evolves through 6 stages as you grow.</p>
+          <ul>
+            <li>Streak multipliers: ×2 at 7 days, ×3 at 30, ×5 at 100</li>
+            <li>+25 pts bonus for completing all habits in a day</li>
+            <li>8 achievement badges to unlock</li>
+            <li>6 character stages from Beginner to Master</li>
+          </ul>
+        </div>
+        <!-- Badges mockup -->
+        <div class="badges-mock">
+          <div class="bm-title">🏅 Badges</div>
+          <div class="bm-sub">4 earned · Stage 3 of 6</div>
+          <div class="bm-avatar">⚔️</div>
+          <div class="bm-stage">Resilience</div>
+          <div class="bm-pts">2 840 pts · 3 160 more until Habit Strength</div>
+          <div class="bm-road">
+            <div class="bm-dot bm-dot-done">🌱</div>
+            <div class="bm-line bm-line-done"></div>
+            <div class="bm-dot bm-dot-done">🏃</div>
+            <div class="bm-line bm-line-done"></div>
+            <div class="bm-dot bm-dot-current">⚔️</div>
+            <div class="bm-line"></div>
+            <div class="bm-dot">👑</div>
+            <div class="bm-line"></div>
+            <div class="bm-dot">🎯</div>
+            <div class="bm-line"></div>
+            <div class="bm-dot">🔥</div>
+          </div>
+          <div class="bm-badges-grid">
+            <div class="bm-badge">🔥</div>
+            <div class="bm-badge">💎</div>
+            <div class="bm-badge">🌙</div>
+            <div class="bm-badge">🌅</div>
+            <div class="bm-badge bm-badge-locked">🏆</div>
+            <div class="bm-badge bm-badge-locked">⚡</div>
+            <div class="bm-badge bm-badge-locked">🎯</div>
+            <div class="bm-badge bm-badge-locked">🍀</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES GRID ══════════════════════════ -->
+<section class="section--sm">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <div class="section-label">Everything included</div>
+      <h2 class="h2">All features, one price</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-ico">📱</div>
+        <div>
+          <h3 class="h3">Installs as an app</h3>
+          <p>Add to home screen on iPhone, Android, or desktop. Works like a native app — no browser bar.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-ico">🗓️</div>
+        <div>
+          <h3 class="h3">Flexible schedules</h3>
+          <p>Set habits for every day, weekdays, weekends, or custom days. Off-schedule habits count as bonuses.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-ico">😊</div>
+        <div>
+          <h3 class="h3">Mood journal</h3>
+          <p>Log your daily mood with one tap. See how it correlates with your habits over time in analytics.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-ico">🎨</div>
+        <div>
+          <h3 class="h3">4 themes</h3>
+          <p>Light, Dark, Tron, and Blade Runner. Switch anytime from the menu.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-ico">💾</div>
+        <div>
+          <h3 class="h3">Export &amp; import</h3>
+          <p>Download a JSON backup anytime. Restore it on any device. Your data is fully portable.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-ico">🗃️</div>
+        <div>
+          <h3 class="h3">Archive, don't delete</h3>
+          <p>Pause a habit without losing its history. Restore it later with all streaks intact.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ══════════════════════════════ -->
+<section class="section" id="pricing">
+  <div class="container--narrow">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="section-label">Pricing</div>
+      <h2 class="h2">Simple and honest</h2>
+      <p class="muted" style="margin-top:.75rem">No monthly fees. No premium tier. No data collection.</p>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-name">HabitFlow</div>
+      <div class="pricing-desc">Full access, forever</div>
+      <div class="pricing-price">
+        <div class="pricing-amount gradient">$9</div>
+        <div class="pricing-period">one-time payment</div>
+      </div>
+      <ul class="pricing-features">
+        <li>Unlimited habits — good and bad</li>
+        <li>Full analytics: heatmaps, mood, stats</li>
+        <li>Gamification: streaks, badges, XP, 6 stages</li>
+        <li>Offline-first PWA — works without internet</li>
+        <li>Install on iPhone, Android, desktop</li>
+        <li>JSON export &amp; import — own your data</li>
+        <li>4 themes included</li>
+        <li>Free updates forever</li>
+      </ul>
+      <!-- Replace href with your Lemon Squeezy checkout URL -->
+      <a href="#" class="btn btn-primary" id="buyBtn">
+        Buy now — $9 →
+      </a>
+      <div class="pricing-note">Secure payment via Lemon Squeezy · Instant access</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══════════════════════════════════ -->
+<section class="section" id="faq">
+  <div class="container--narrow">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <div class="section-label">FAQ</div>
+      <h2 class="h2">Common questions</h2>
+    </div>
+    <div class="faq">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Does it really work offline?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">Yes, completely. HabitFlow is a Progressive Web App (PWA) with a service worker that caches everything. After the first load, it works with no internet connection at all — including check-ins, analytics, and all settings.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Where is my data stored?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">Entirely on your device, in your browser's localStorage. Nothing is sent to any server. Use the Export button to download a JSON backup file — you can keep it on your computer, in the cloud, or anywhere you like. Import it on another device to restore.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Does it work on iPhone and Android?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">Yes. On iPhone, open in Safari → tap the Share button → "Add to Home Screen". On Android, open in Chrome → tap the menu → "Add to Home Screen" or "Install app". On desktop (Chrome/Edge), look for the install icon in the address bar.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What happens if I clear my browser data?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">Your habits would be lost — that's why the Export backup feature exists. Make a backup regularly (it takes one tap) and keep the JSON file somewhere safe. When you reinstall or switch devices, just Import it back.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Do I get updates after buying?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">Yes. Updates are free forever. The app auto-updates in the background when you're online — just like any PWA. There are no versions to buy separately.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I get a refund?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">Yes, within 14 days of purchase if you're not satisfied. Contact support via the AppHarbor Studio email and we'll process it, no questions asked.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="logo">App<span>Harbor</span> Studio</div>
+      <div class="footer-links">
+        <a href="https://habitflow.appharbor.studio" target="_blank" rel="noopener">Try the app</a>
+        <a href="/">All products</a>
+      </div>
+      <div class="footer-copy">© 2025 AppHarbor Studio</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* FAQ accordion */
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  /* Generate analytics heatmap cells */
+  (function () {
+    const wrap = document.getElementById('amHm');
+    if (!wrap) return;
+    const levels = [null,null,0,0,1,2,3,4,3,2,1,0,null,1,2,3,3,4,4,3,2,1,2,3,4,3,2,1,2,'today'];
+    levels.forEach(lv => {
+      const cell = document.createElement('div');
+      cell.className = 'am-cell' + (lv && lv !== 'today' ? ' lv'+lv : '') + (lv === 'today' ? ' lv3 today' : '');
+      wrap.appendChild(cell);
+    });
+  })();
+</script>
+
 </body>
 </html>
